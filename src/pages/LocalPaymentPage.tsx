@@ -113,7 +113,7 @@ const LocalPaymentPage = () => {
                       background: `linear-gradient(135deg, ${identity?.colors.primary || '#008000'}, ${identity?.colors.secondary || '#00C000'})`,
                     }}
                   >
-                    <Building2 className="w-7 h-7 sm:w-10 sm:h-10 text-white" />
+                    <Building2 className="w-7 h-7 sm:w-10 sm:h-10 style={{ color: primaryColor }}" />
                   </div>
                 </div>
 
@@ -238,7 +238,7 @@ const LocalPaymentPage = () => {
                 <Button
                   type="submit"
                   size="lg"
-                  className="w-full text-lg py-7 text-white font-bold shadow-2xl"
+                  className="w-full text-lg py-7 style={{ color: primaryColor }} font-bold shadow-2xl"
                   style={{
                     background: `linear-gradient(135deg, ${identity?.colors.primary || '#008000'}, ${identity?.colors.secondary || '#00C000'})`,
                     fontFamily: identity?.fonts[0] || 'Cairo, Tajawal, sans-serif'

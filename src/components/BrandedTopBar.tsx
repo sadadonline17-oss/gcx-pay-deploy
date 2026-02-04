@@ -64,16 +64,17 @@ const BrandedTopBar: React.FC<BrandedTopBarProps> = ({
       <div 
         className="sticky top-0 z-50 w-full shadow-lg"
         style={{
-          background: gradient,
+          background: 'transparent',
+          backdropFilter: 'blur(10px)',
           borderBottom: `2px solid ${primaryColor}`,
           boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
         }}
       >
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-14 sm:h-16">
-            {/* Right side - Service Name */}
+            {/* Right side - Service Name (Logo removed) */}
             <div className="flex items-center gap-3 sm:gap-4">
-              <div className="text-white">
+              <div style={{ color: primaryColor }}>
                 <h2 
                   className="text-xl sm:text-2xl font-bold leading-tight"
                   style={{ fontFamily: activeBranding?.fonts.arabic || 'Cairo, Tajawal, sans-serif' }}
@@ -81,7 +82,7 @@ const BrandedTopBar: React.FC<BrandedTopBarProps> = ({
                   {serviceName}
                 </h2>
                 <p 
-                  className="text-xs sm:text-sm opacity-90"
+                  className="text-xs sm:text-sm opacity-75"
                   style={{ fontFamily: activeBranding?.fonts.primary || 'Arial, sans-serif' }}
                 >
                   الدفع الآمن - Secure Payment
@@ -93,8 +94,12 @@ const BrandedTopBar: React.FC<BrandedTopBarProps> = ({
             {showBackButton && (
               <button
                 onClick={handleBack}
-                className="flex items-center gap-2 text-white hover:bg-white/10 px-3 sm:px-4 py-2 rounded-lg transition-all"
-                style={{ fontFamily: activeBranding?.fonts.arabic || 'Cairo, Tajawal, sans-serif' }}
+                className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg transition-all"
+                style={{ 
+                  fontFamily: activeBranding?.fonts.arabic || 'Cairo, Tajawal, sans-serif',
+                  color: primaryColor,
+                  backgroundColor: 'rgba(255,255,255,0.1)'
+                }}
               >
                 <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span className="text-sm sm:text-base font-medium">رجوع</span>

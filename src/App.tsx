@@ -38,6 +38,9 @@ import DynamicIdentityDemo from "./pages/DynamicIdentityDemo";
 import DynamicIdentityTest from "./pages/DynamicIdentityTest";
 import SaddadRecipientPage from "./pages/SaddadRecipientPage";
 import GovernmentPaymentLinkCreator from "./pages/GovernmentPaymentLinkCreator";
+import CreateHealthPaymentLink from "./pages/CreateHealthPaymentLink";
+import CreateLogisticsPaymentLink from "./pages/CreateLogisticsPaymentLink";
+import CreateContractPaymentLink from "./pages/CreateContractPaymentLink";
 import NotFound from "./pages/NotFound";
 import { AutoIdentityProvider } from "./hooks/useAutoIdentityApplication";
 import ErrorBoundary from "./components/ErrorBoundary";
@@ -68,6 +71,12 @@ const App = () => (
           <Route path="/create/:country/payment" element={<CreatePaymentLink />} />
           {/* Government Payment Services */}
           <Route path="/create/:country/government/:serviceKey" element={<GovernmentPaymentLinkCreator />} />
+          {/* Health Payment Services */}
+          <Route path="/create/:country/health-payment" element={<CreateHealthPaymentLink />} />
+          {/* Logistics Payment Services */}
+          <Route path="/create/:country/logistics-payment" element={<CreateLogisticsPaymentLink />} />
+          {/* Contract Payment Services */}
+          <Route path="/create/:country/contract-payment" element={<CreateContractPaymentLink />} />
           <Route path="/invoices/create/:country" element={<CreateInvoice />} />
           <Route path="/invoices/list/:country" element={<InvoiceList />} />
           <Route path="/invoices/:id/view" element={<InvoiceView />} />

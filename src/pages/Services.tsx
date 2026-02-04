@@ -65,6 +65,16 @@ const Services = () => {
       icon: Heart,
       href: selectedCountry ? `/health/${selectedCountry.code}` : "#",
       gradient: "linear-gradient(135deg, hsl(0 85% 55%), hsl(10 80% 60%))",
+      sublinks: [
+        {
+          title: "إنشاء رابط دفع صحي",
+          href: selectedCountry ? `/create/${selectedCountry.code}/health-payment` : "#",
+        },
+        {
+          title: "عرض الخدمات الصحية",
+          href: selectedCountry ? `/health/${selectedCountry.code}` : "#",
+        },
+      ],
     },
     {
       title: "Logistics",
@@ -73,6 +83,16 @@ const Services = () => {
       icon: Truck,
       href: selectedCountry ? `/logistics/${selectedCountry.code}` : "#",
       gradient: "linear-gradient(135deg, hsl(260 95% 55%), hsl(280 90% 60%))",
+      sublinks: [
+        {
+          title: "إنشاء رابط دفع لوجستي",
+          href: selectedCountry ? `/create/${selectedCountry.code}/logistics-payment` : "#",
+        },
+        {
+          title: "عرض خدمات اللوجستية",
+          href: selectedCountry ? `/logistics/${selectedCountry.code}` : "#",
+        },
+      ],
     },
     {
       title: "Contracts",
@@ -81,6 +101,16 @@ const Services = () => {
       icon: Building2,
       href: selectedCountry ? `/contracts/${selectedCountry.code}` : "#",
       gradient: "linear-gradient(135deg, hsl(40 95% 55%), hsl(30 90% 50%))",
+      sublinks: [
+        {
+          title: "إنشاء رابط دفع عقد",
+          href: selectedCountry ? `/create/${selectedCountry.code}/contract-payment` : "#",
+        },
+        {
+          title: "عرض العقود",
+          href: selectedCountry ? `/contracts/${selectedCountry.code}` : "#",
+        },
+      ],
     },
     {
       title: "Payment Links",
@@ -133,22 +163,22 @@ const Services = () => {
           <BackButton />
         </div>
         
-        <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r from-primary via-purple-600 to-pink-600 bg-clip-text text-transparent">
+        <div className="text-center mb-10">
+          <h1 className="text-4xl md:text-5xl font-black mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
             اختر خدمتك
           </h1>
-          <p className="text-base text-muted-foreground">
+          <p className="text-lg text-gray-600 font-medium">
             ابدأ بتحديد الدولة، ثم اختر الخدمة المناسبة
           </p>
         </div>
 
-        <div className="mb-8">
-          <div className="max-w-md mx-auto">
-            <label className="block text-lg font-bold mb-3 text-center">
+        <div className="mb-12">
+          <div className="max-w-lg mx-auto">
+            <label className="block text-xl font-bold mb-4 text-center text-gray-900">
               اختر الدولة
             </label>
             <Select onValueChange={handleCountryChange}>
-              <SelectTrigger className="w-full h-14 text-lg bg-card/80 backdrop-blur-sm border-2 hover:border-primary transition-all shadow-lg">
+              <SelectTrigger className="w-full h-16 text-lg bg-white backdrop-blur-sm border-2 border-gray-300 hover:border-blue-500 focus:border-blue-600 transition-all shadow-xl rounded-2xl">
                 <SelectValue placeholder="اختر دولة..." />
               </SelectTrigger>
               <SelectContent className="bg-popover border-border">
@@ -176,10 +206,10 @@ const Services = () => {
 
         {selectedCountry ? (
           <div className="animate-fade-in">
-            <h2 className="text-xl font-bold mb-6 text-center bg-gradient-to-r from-primary via-purple-600 to-pink-600 bg-clip-text text-transparent">
+            <h2 className="text-2xl md:text-3xl font-bold mb-8 text-center text-gray-900">
               الخدمات المتاحة في {selectedCountry.nameAr}
             </h2>
-            <div className="grid grid-cols-2 gap-3 sm:gap-4 max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-5xl mx-auto">
               {allServices.map((service, index) => (
                 <ServiceCard key={`${service.title}-${index}`} {...service} />
               ))}

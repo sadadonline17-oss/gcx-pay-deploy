@@ -29,12 +29,7 @@ const ServiceCard = ({
   if (sublinks && sublinks.length > 0) {
     return (
       <div 
-        className="group relative overflow-hidden bg-card transition-all duration-500 hover:shadow-2xl h-full"
-        style={{
-          borderRadius: designSystem.borderRadius['2xl'],
-          border: `2px solid ${designSystem.colors.neutral[200]}`,
-          boxShadow: designSystem.shadows.md
-        }}
+        className="group relative overflow-hidden bg-white transition-all duration-500 hover:shadow-2xl h-full border-2 border-gray-200 hover:border-blue-400 rounded-2xl"
       >
         <div
           className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-500"
@@ -50,20 +45,12 @@ const ServiceCard = ({
           </div>
 
           <h3 
-            className="text-xl font-bold mb-2 group-hover:text-primary transition-colors"
-            style={{
-              fontFamily: designSystem.typography.fontFamilies.arabic,
-              fontWeight: designSystem.typography.fontWeights.bold
-            }}
+            className="text-xl font-bold mb-2 text-gray-900 group-hover:text-blue-600 transition-colors"
           >
             {titleAr}
           </h3>
           <p 
-            className="text-sm mb-4"
-            style={{ 
-              color: designSystem.colors.neutral[600],
-              lineHeight: designSystem.typography.lineHeights.relaxed
-            }}
+            className="text-sm mb-4 text-gray-600 leading-relaxed"
           >{description}</p>
 
           <div className="space-y-2">
@@ -86,18 +73,7 @@ const ServiceCard = ({
   return (
     <Link to={href} className="block h-full">
       <div 
-        className="group relative overflow-hidden bg-card transition-all duration-500 hover:-translate-y-2 cursor-pointer h-full"
-        style={{
-          borderRadius: designSystem.borderRadius['2xl'],
-          border: `2px solid ${designSystem.colors.neutral[200]}`,
-          boxShadow: designSystem.shadows.md
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.boxShadow = designSystem.shadows['2xl'];
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.boxShadow = designSystem.shadows.md;
-        }}
+        className="group relative overflow-hidden bg-white transition-all duration-500 hover:-translate-y-2 cursor-pointer h-full border-2 border-gray-200 hover:border-blue-400 rounded-2xl shadow-lg hover:shadow-2xl"
       >
         <div
           className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-500"
@@ -113,25 +89,17 @@ const ServiceCard = ({
           </div>
 
           <h3 
-            className="text-xl font-bold mb-2 group-hover:text-primary transition-colors"
-            style={{
-              fontFamily: designSystem.typography.fontFamilies.arabic,
-              fontWeight: designSystem.typography.fontWeights.bold
-            }}
+            className="text-xl font-bold mb-2 text-gray-900 group-hover:text-blue-600 transition-colors"
           >
             {titleAr}
           </h3>
           <p 
-            className="text-sm mb-1"
-            style={{ 
-              color: designSystem.colors.neutral[600],
-              lineHeight: designSystem.typography.lineHeights.relaxed
-            }}
+            className="text-sm mb-1 text-gray-600 leading-relaxed"
           >{description}</p>
         </div>
         
         <div className="absolute bottom-3 left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
           </svg>
         </div>

@@ -109,7 +109,7 @@ const ContractPaymentPage = () => {
                       background: `linear-gradient(135deg, ${identity?.colors.primary || '#000080'}, ${identity?.colors.secondary || '#0000CD'})`,
                     }}
                   >
-                    <FileText className="w-7 h-7 sm:w-10 sm:h-10 text-white" />
+                    <FileText className="w-7 h-7 sm:w-10 sm:h-10 style={{ color: primaryColor }}" />
                   </div>
                 </div>
 
@@ -252,7 +252,7 @@ const ContractPaymentPage = () => {
                 <Button
                   type="submit"
                   size="lg"
-                  className="w-full text-lg py-7 text-white font-bold shadow-2xl"
+                  className="w-full text-lg py-7 style={{ color: primaryColor }} font-bold shadow-2xl"
                   style={{
                     background: `linear-gradient(135deg, ${identity?.colors.primary || '#000080'}, ${identity?.colors.secondary || '#0000CD'})`,
                     fontFamily: identity?.fonts[0] || 'Cairo, Tajawal, sans-serif'

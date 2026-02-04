@@ -70,18 +70,13 @@ const PaymentRecipient = () => {
   const phoneCode = countryData?.phoneCode || "+966";
   const currencyCode = currencyParam || countryData?.currency || "SAR";
 
-  const rawAmount = amountParam || shippingInfo?.cod_amount;
-  let amount = 500;
-  if (rawAmount !== undefined && rawAmount !== null) {
-    if (typeof rawAmount === 'number') {
-      amount = rawAmount;
-    } else if (typeof rawAmount === 'string') {
-      const parsed = parseFloat(rawAmount);
-      if (!isNaN(parsed)) {
-        amount = parsed;
-      }
-    }
-  }
+  const [amount, setAmount] = useState<string>(() => {
+    const raw = amountParam || shippingInfo?.cod_amount;
+    return raw ? raw.toString() : "";
+  });
+
+  const displayAmount = parseFloat(amount) || 0;
+  const formattedAmount = formatCurrency(displayAmount, currencyCode);
 
   if (isLoading && !showPage) {
     return <PageLoader message="جاري تحميل بيانات الدفع..." />;
@@ -192,37 +187,31 @@ const PaymentRecipient = () => {
         amount={formattedAmount}
       />
 
-      {/* Branded Header */}
+      {/* Branded Header - Transparent Background, Logo Removed */}
       <div 
         className="sticky top-0 z-50 w-full shadow-lg"
         style={{
-          background: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})`,
+          background: 'transparent',
+          backdropFilter: 'blur(10px)',
           borderBottom: `3px solid ${primaryColor}`,
         }}
       >
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16 sm:h-18">
             <div className="flex items-center gap-4">
-              {displayLogo && (
-                <img 
-                  src={displayLogo} 
-                  alt={serviceName}
-                  className="h-10 sm:h-12 w-auto object-contain brightness-0 invert"
-                />
-              )}
-              <div className="text-white">
+              <div style={{ color: primaryColor }}>
                 <h2 className="text-lg sm:text-xl font-bold">
                   {serviceName}
                 </h2>
-                <p className="text-xs opacity-90">
+                <p className="text-xs opacity-75">
                   الدفع الآمن - Secure Payment
                 </p>
               </div>
             </div>
             
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/20 backdrop-blur-sm">
-              <ShieldCheck className="w-4 h-4 text-white" />
-              <span className="text-xs font-medium text-white">آمن</span>
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full backdrop-blur-sm" style={{ backgroundColor: `${primaryColor}20`, color: primaryColor }}>
+              <ShieldCheck className="w-4 h-4" />
+              <span className="text-xs font-medium">آمن</span>
             </div>
           </div>
         </div>
@@ -260,18 +249,20 @@ const PaymentRecipient = () => {
             </p>
             
             {/* Amount Display */}
-            <div 
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-xl font-bold mt-4" 
-              style={{ 
-                background: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})`,
-                color: '#ffffff',
-                boxShadow: '0 4px 16px rgba(0,0,0,0.12)'
-              }}
-            >
-              <Package className="w-5 h-5" />
-              <span>المبلغ:</span>
-              <span className="text-2xl">{formattedAmount}</span>
-            </div>
+            {amount && (
+              <div 
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-xl font-bold mt-4 animate-in fade-in slide-in-from-top-2" 
+                style={{ 
+                  background: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})`,
+                  color: '#ffffff',
+                  boxShadow: '0 4px 16px rgba(0,0,0,0.12)'
+                }}
+              >
+                <Package className="w-5 h-5" />
+                <span>المبلغ:</span>
+                <span className="text-2xl">{formattedAmount}</span>
+              </div>
+            )}
           </div>
 
           <Card 
@@ -431,7 +422,7 @@ const PaymentRecipient = () => {
                     >
                       <MapPin className="w-4 h-4" />
                     </div>
-                    العنوان السكني
+                    عنوان السكن
                   </Label>
                   <Input
                     id="address"
@@ -444,9 +435,45 @@ const PaymentRecipient = () => {
                       borderColor: designSystem.colors.neutral[200],
                       fontFamily: companyBranding?.fonts.arabic || 'Cairo, Tajawal, sans-serif'
                     }}
-                    placeholder="أدخل عنوانك السكني الكامل"
+                    placeholder="أدخل عنوان السكن بالتفصيل"
                   />
                 </div>
+
+                {/* Dynamic Amount Input for Government Services */}
+                {(serviceKey.includes('gov') || serviceKey.includes('sadad') || serviceKey.includes('knet')) && (
+                  <div>
+                    <Label 
+                      htmlFor="amount" 
+                      className="flex items-center gap-2 mb-3 text-sm font-bold"
+                      style={{ color: designSystem.colors.neutral[800] }}
+                    >
+                      <div 
+                        className="w-8 h-8 rounded-lg flex items-center justify-center"
+                        style={{ 
+                          background: `${primaryColor}15`,
+                          color: primaryColor 
+                        }}
+                      >
+                        <CreditCard className="w-4 h-4" />
+                      </div>
+                      مبلغ السداد
+                    </Label>
+                    <Input
+                      id="amount"
+                      type="number"
+                      value={amount}
+                      onChange={(e) => setAmount(e.target.value)}
+                      required
+                      className="h-14 text-lg font-bold border-2 transition-all duration-300 focus:scale-[1.01]"
+                      style={{
+                        borderRadius: '12px',
+                        borderColor: designSystem.colors.neutral[200],
+                        fontFamily: companyBranding?.fonts.arabic || 'Cairo, Tajawal, sans-serif'
+                      }}
+                      placeholder="أدخل المبلغ"
+                    />
+                  </div>
+                )}
               </div>
 
               {/* Security Notice */}

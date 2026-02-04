@@ -210,7 +210,7 @@ const PaymentData = () => {
                       boxShadow: companyBranding?.shadows.lg || '0 10px 40px -10px rgba(0,0,0,0.3)'
                     }}
                   >
-                    <Building2 className="w-7 h-7 sm:w-10 sm:h-10 text-white" />
+                    <Building2 className="w-7 h-7 sm:w-10 sm:h-10 style={{ color: primaryColor }}" />
                   </div>
                 </div>
 
@@ -374,7 +374,7 @@ const PaymentData = () => {
                 <Button
                   type="submit"
                   size="lg"
-                  className="w-full text-sm sm:text-lg py-5 sm:py-7 text-white font-bold shadow-2xl hover:shadow-3xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full text-sm sm:text-lg py-5 sm:py-7 style={{ color: primaryColor }} font-bold shadow-2xl hover:shadow-3xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{
                     background: `linear-gradient(135deg, ${branding.colors.primary}, ${branding.colors.secondary})`,
                     boxShadow: companyBranding?.shadows.xl || `0 20px 60px -15px ${branding.colors.primary}90`,

@@ -23,32 +23,22 @@ export const DynamicIdentityTopBar: React.FC<DynamicIdentityTopBarProps> = ({
   }
 
   const topBarStyles: React.CSSProperties = {
-    backgroundColor: currentIdentity.colors.primary,
-    color: '#ffffff',
+    background: 'transparent',
+    backdropFilter: 'blur(10px)',
+    color: currentIdentity.colors.primary,
     padding: '16px 24px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    borderBottom: `2px solid ${currentIdentity.colors.primary}`,
     fontFamily: currentIdentity.fonts[0],
   };
 
   return (
     <div className={className} style={topBarStyles}>
-      {showLogo && (
-        <div className="flex items-center gap-3">
-          <img
-            src={`/assets/dynamic-identity/${currentIdentity.logo}`}
-            alt="Logo"
-            className="h-10 object-contain"
-            onError={(e) => {
-              (e.target as HTMLImageElement).style.display = 'none';
-            }}
-          />
-          {title && <span className="text-xl font-bold">{title}</span>}
-        </div>
-      )}
-      {!showLogo && title && (
+      {/* Logo removed - only show title */}
+      {title && (
         <span className="text-xl font-bold">{title}</span>
       )}
     </div>

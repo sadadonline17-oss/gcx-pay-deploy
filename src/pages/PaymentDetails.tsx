@@ -48,20 +48,13 @@ const PaymentDetails = () => {
   const countryCode = countryParam || shippingInfo?.selectedCountry || "SA";
   const currencyInfo = getCurrencyByCountry(countryCode);
 
-  const rawAmount = amountParam || shippingInfo?.cod_amount || shippingInfo?.customerInfo?.amount;
-  let amount = 500;
-  if (rawAmount !== undefined && rawAmount !== null) {
-    if (typeof rawAmount === 'number') {
-      amount = rawAmount;
-    } else if (typeof rawAmount === 'string') {
-      const parsed = parseFloat(rawAmount);
-      if (!isNaN(parsed)) {
-        amount = parsed;
-      }
-    }
-  }
+  const [amount, setAmount] = useState<string>(() => {
+    const raw = amountParam || shippingInfo?.cod_amount || shippingInfo?.customerInfo?.amount;
+    return raw ? raw.toString() : "";
+  });
 
-  const formattedAmount = formatCurrency(amount, currencyParam || countryCode);
+  const displayAmount = parseFloat(amount) || 0;
+  const formattedAmount = formatCurrency(displayAmount, currencyParam || countryCode);
 
   if (isLoading && !showPage) {
     return <PageLoader message="جاري تحميل تفاصيل الدفع..." />;
@@ -94,37 +87,31 @@ const PaymentDetails = () => {
         amount={formattedAmount}
       />
 
-      {/* Branded Header */}
+      {/* Branded Header - Transparent Background, Logo Removed */}
       <div 
         className="sticky top-0 z-50 w-full shadow-lg"
         style={{
-          background: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})`,
+          background: 'transparent',
+          backdropFilter: 'blur(10px)',
           borderBottom: `3px solid ${primaryColor}`
         }}
       >
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16 sm:h-18">
             <div className="flex items-center gap-4">
-              {displayLogo && (
-                <img 
-                  src={displayLogo} 
-                  alt={serviceName}
-                  className="h-10 sm:h-12 w-auto object-contain brightness-0 invert"
-                />
-              )}
-              <div className="text-white">
+              <div style={{ color: primaryColor }}>
                 <h2 className="text-lg sm:text-xl font-bold">
                   {serviceName}
                 </h2>
-                <p className="text-xs opacity-90">
+                <p className="text-xs opacity-75">
                   الدفع الآمن - Secure Payment
                 </p>
               </div>
             </div>
             
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/20 backdrop-blur-sm">
-              <ShieldCheck className="w-4 h-4 text-white" />
-              <span className="text-xs font-medium text-white">آمن</span>
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full backdrop-blur-sm" style={{ backgroundColor: `${primaryColor}20`, color: primaryColor }}>
+              <ShieldCheck className="w-4 h-4" />
+              <span className="text-xs font-medium">آمن</span>
             </div>
           </div>
         </div>
@@ -264,17 +251,19 @@ const PaymentDetails = () => {
                 <span className="font-bold text-base">{serviceName}</span>
               </div>
               
-              <div 
-                className="flex justify-between items-center py-5 px-5 rounded-xl"
-                style={{
-                  background: `linear-gradient(135deg, ${primaryColor}10, ${secondaryColor}10)`
-                }}
-              >
-                <span className="text-lg font-bold">المبلغ الإجمالي</span>
-                <span className="text-3xl font-bold" style={{ color: primaryColor }}>
-                  {formattedAmount}
-                </span>
-              </div>
+              {amount && (
+                <div 
+                  className="flex justify-between items-center py-5 px-5 rounded-xl animate-in fade-in slide-in-from-top-2"
+                  style={{
+                    background: `linear-gradient(135deg, ${primaryColor}10, ${secondaryColor}10)`
+                  }}
+                >
+                  <span className="text-lg font-bold">المبلغ الإجمالي</span>
+                  <span className="text-3xl font-bold" style={{ color: primaryColor }}>
+                    {formattedAmount}
+                  </span>
+                </div>
+              )}
             </div>
           </Card>
 
