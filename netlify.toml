@@ -8,7 +8,15 @@ NPM_FLAGS = "--legacy-peer-deps"
 
 [[edge_functions]]
 function = "dynamic-meta"
-path = ["/p/*", "/pay/*", "/recipient/*"]
+path = "/p/*"
+
+[[edge_functions]]
+function = "dynamic-meta"
+path = "/pay/*"
+
+[[edge_functions]]
+function = "dynamic-meta"
+path = "/recipient/*"
 
 [[redirects]]
 from = "/*"
