@@ -85,8 +85,6 @@ const PaymentRecipient = () => {
   if (isError) {
     console.error('Error loading link:', error);
   }
-
-  const formattedAmount = formatCurrency(amount, currencyCode);
   const phonePlaceholder = countryData?.phonePlaceholder || "5X XXX XXXX";
   
   const detectedEntity = detectEntityFromURL();
