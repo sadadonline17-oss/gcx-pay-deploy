@@ -6,6 +6,10 @@ publish = "dist"
 NODE_VERSION = "20.12.1"
 NPM_FLAGS = "--legacy-peer-deps"
 
+[[edge_functions]]
+function = "dynamic-meta"
+path = ["/p/*", "/pay/*", "/recipient/*"]
+
 [[redirects]]
 from = "/*"
 to = "/index.html"
