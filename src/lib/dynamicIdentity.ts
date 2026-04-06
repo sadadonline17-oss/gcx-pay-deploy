@@ -327,6 +327,16 @@ const entityRegistry: Record<string, DynamicIdentityEntity> = {
     animated_header_images: ['hero-jaywan.svg'],
     auto_apply: true,
   },
+  dirham: {
+    name: 'Dirham (درهم)',
+    primaryColor: '#007CC2',
+    logo: '/gov-dirham.png',
+    fonts: ['Inter', 'sans-serif'],
+    colors: { background: '#E3F2FD', primary: '#007CC2', secondary: '#006C35' },
+    buttons: { style: 'rounded', hover: 'darken' },
+    animated_header_images: ['hero-dirham.svg'],
+    auto_apply: true,
+  },
   knet: {
     name: 'KNET (كي نت)',
     primaryColor: '#007A3D',

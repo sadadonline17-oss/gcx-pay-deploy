@@ -1,4 +1,4 @@
-// Service logos and branding - All GCC shipping carriers
+// Service logos and branding - All GCC shipping carriers + government payment systems + banks
 export const serviceLogos: Record<string, { logo: string; colors: { primary: string; secondary: string }; ogImage?: string; heroImage?: string; description?: string }> = {
   // UAE - الإمارات
   aramex: {
@@ -282,6 +282,27 @@ export const serviceLogos: Record<string, { logo: string; colors: { primary: str
     ogImage: "/og-jinakum.jpg",
     heroImage: "/og-jinakum.jpg",
     description: "شركة Jinakum - خدمات دفع وتحويل آمنة وموثوقة"
+  },
+  // UAE Government Payment Systems
+  jaywan: {
+    logo: "/gov-jaywan.png",
+    colors: {
+      primary: "#CE1126",
+      secondary: "#FFFFFF"
+    },
+    ogImage: "/gov-jaywan.png",
+    heroImage: "/gov-jaywan.png",
+    description: "نظام جيوان - بوابة الدفع الإلكتروني الموحدة في الإمارات"
+  },
+  dirham: {
+    logo: "/gov-dirham.png",
+    colors: {
+      primary: "#007CC2",
+      secondary: "#006C35"
+    },
+    ogImage: "/gov-dirham.png",
+    heroImage: "/gov-dirham.png",
+    description: "بوابة درهم - نظام الدفع الإلكتروني الآمن في الإمارات"
   }
 };
 
