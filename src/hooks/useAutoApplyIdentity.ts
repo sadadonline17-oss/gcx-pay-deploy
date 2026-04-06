@@ -32,14 +32,15 @@ export const useAutoApplyIdentity = () => {
     return () => {
       if (entity) {
         const root = document.documentElement;
+        root.style.removeProperty('--dynamic-primary-h');
+        root.style.removeProperty('--dynamic-primary-s');
+        root.style.removeProperty('--dynamic-primary-l');
+        root.style.removeProperty('--dynamic-primary-hsl');
         root.style.removeProperty('--dynamic-primary');
-        root.style.removeProperty('--dynamic-secondary');
-        root.style.removeProperty('--dynamic-background');
-        root.style.removeProperty('--dynamic-font-primary');
-        root.style.removeProperty('--dynamic-font-secondary');
-        root.style.removeProperty('--dynamic-button-radius');
+        root.style.removeProperty('--dynamic-primary-hover');
+        root.style.removeProperty('--dynamic-primary-active');
+        root.style.removeProperty('--dynamic-primary-highlight');
         root.removeAttribute('data-entity');
-        root.removeAttribute('data-button-hover');
       }
     };
   }, [id, linkData, location]);
