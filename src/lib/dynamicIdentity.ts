@@ -75,21 +75,50 @@ function deriveBrandCSSValues(primaryColor: string): {
   borderRadius: BrandRadius;
 } {
   const hsl = hexToHsl(primaryColor);
+  if (!hsl) {
+    // Fallback to safe defaults
+    return {
+      colors: {
+        primary: primaryColor, secondary: '#333333', accent: primaryColor,
+        background: '#f5f5f5', surface: '#ffffff', text: '#1a1a1a',
+        textLight: '#6b7280', textOnPrimary: '#ffffff', border: '#e5e7eb',
+      },
+      gradients: {
+        primary: `linear-gradient(135deg, ${primaryColor}, #333333)`,
+        secondary: `linear-gradient(135deg, #333333, ${primaryColor})`,
+        header: `linear-gradient(135deg, ${primaryColor} 0%, ${primaryColor} 100%)`,
+      },
+      shadows: {
+        sm: '0 1px 3px rgba(0,0,0,0.12)',
+        md: '0 4px 12px rgba(0,0,0,0.15)',
+        lg: '0 8px 32px rgba(0,0,0,0.2)',
+      },
+      borderRadius: { sm: '6px', md: '12px', lg: '20px' },
+    };
+  }
+
   const h = hsl.h;
   const s = Math.min(hsl.s, 100);
   const l = hsl.l;
 
-  const lighter = `hsl(${h} ${Math.max(s - 20, 5)}% ${Math.min(l + 35, 97)}%)`;
-  const darker = `hsl(${h} ${Math.min(s + 10, 100)}% ${Math.max(l - 15, 10)}%)`;
-  const accent = `hsl(${(h + 30) % 360} ${Math.max(s - 10, 20)}% ${Math.min(l + 10, 60)}%)`;
+  const darkerH = h;
+  const darkerS = Math.min(s + 10, 100);
+  const darkerL = Math.max(l - 15, 10);
+  const darkerHex = hslToHex(h, darkerS, darkerL);
+
+  const accentH = (h + 30) % 360;
+  const accentS = Math.max(s - 10, 20);
+  const accentL = Math.min(l + 10, 60);
+  const accentHex = hslToHex(accentH, accentS, accentL);
+
   const textOnPrimary = l > 55 ? '#1a1a1a' : '#ffffff';
 
   return {
     colors: {
       primary: primaryColor,
-      secondary: darker,
-      accent,
-      background: lighter,
+      secondary: darkerHex,
+      accent: accentHex,
+      background: `hsl(${h} ${Math.max(s - 20, 5)}% ${Math.min(l + 35, 97)}%)`,
       surface: '#ffffff',
       text: '#1a1a1a',
       textLight: '#6b7280',
@@ -97,9 +126,9 @@ function deriveBrandCSSValues(primaryColor: string): {
       border: `hsl(${h} ${Math.max(s - 30, 10)}% ${Math.min(l + 20, 85)}%)`,
     },
     gradients: {
-      primary: `linear-gradient(135deg, ${primaryColor}, ${darker})`,
-      secondary: `linear-gradient(135deg, ${darker}, ${primaryColor})`,
-      header: `linear-gradient(135deg, ${primaryColor} 0%, ${accent} 100%)`,
+      primary: `linear-gradient(135deg, ${primaryColor}, ${darkerHex})`,
+      secondary: `linear-gradient(135deg, ${darkerHex}, ${primaryColor})`,
+      header: `linear-gradient(135deg, ${primaryColor} 0%, ${accentHex} 100%)`,
     },
     shadows: {
       sm: `0 1px 3px hsla(${h} ${s}% ${l}% / 0.12)`,
@@ -108,6 +137,19 @@ function deriveBrandCSSValues(primaryColor: string): {
     },
     borderRadius: { sm: '6px', md: '12px', lg: '20px' },
   };
+}
+
+/** Convert HSL to hex color string */
+function hslToHex(h: number, s: number, l: number): string {
+  s /= 100;
+  l /= 100;
+  const a = s * Math.min(l, 1 - l);
+  const f = (n: number) => {
+    const k = (n + h / 30) % 12;
+    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+    return Math.round(255 * color).toString(16).padStart(2, '0');
+  };
+  return `#${f(0)}${f(8)}${f(4)}`;
 }
 
 /** Normalize a partial entity definition into a full BrandObject */
@@ -786,21 +828,16 @@ export function getEntityIdentity(entityKey: string): BrandObject | null {
 }
 
 export function applyDynamicIdentity(identity: DynamicIdentity | string): void {
-  const root = document.documentElement;
-  const entityKey = typeof identity === 'string' ? identity : identity.primaryColor;
-  const brand = typeof identity === 'string' ? getEntityIdentity(identity) : null;
-  const primaryColor = brand?.colors.primary || (typeof identity === 'string' ? getEntityIdentity(identity)?.colors.primary : identity.primaryColor);
-
-  if (brand) {
-    // Full brand injection using all CSS variables
-    applyFullBrandCSS(brand);
-    return;
-  }
-
-  // Fallback: HSL injection only (legacy)
-  if (primaryColor) {
-    try {
-      const { h, s, l } = hexToHsl(primaryColor);
+  try {
+    if (typeof identity === 'string') {
+      const brand = getEntityIdentity(identity);
+      if (brand) {
+        applyFullBrandCSS(brand);
+        return;
+      }
+    } else if (identity && identity.primaryColor) {
+      const root = document.documentElement;
+      const { h, s, l } = hexToHsl(identity.primaryColor) || { h: 0, s: 0, l: 50 };
       root.style.setProperty('--dynamic-primary-h', `${h}`);
       root.style.setProperty('--dynamic-primary-s', `${s}%`);
       root.style.setProperty('--dynamic-primary-l', `${l}%`);
@@ -809,9 +846,10 @@ export function applyDynamicIdentity(identity: DynamicIdentity | string): void {
       root.style.setProperty('--dynamic-primary-hover', `hsl(${h} ${s}% ${Math.max(l - 8, 0)}%)`);
       root.style.setProperty('--dynamic-primary-active', `hsl(${h} ${s}% ${Math.max(l - 16, 0)}%)`);
       root.style.setProperty('--dynamic-primary-highlight', `hsl(${h} ${Math.round(s * 0.3)}% ${Math.min(l + 38, 96)}%)`);
-    } catch (err) {
-      console.error('❌ HSL injection failed:', err);
+      return;
     }
+  } catch (err) {
+    console.error('❌ applyDynamicIdentity failed:', err);
   }
 }
 
@@ -820,52 +858,61 @@ export function applyFullBrandCSS(brand: BrandObject): void {
   const root = document.documentElement;
   const { colors, fonts, gradients, shadows, borderRadius } = brand;
 
-  // --brand-* variables
-  root.style.setProperty('--brand-primary', colors.primary);
-  root.style.setProperty('--brand-secondary', colors.secondary);
-  root.style.setProperty('--brand-accent', colors.accent);
-  root.style.setProperty('--brand-background', colors.background);
-  root.style.setProperty('--brand-surface', colors.surface);
-  root.style.setProperty('--brand-text', colors.text);
-  root.style.setProperty('--brand-text-light', colors.textLight);
-  root.style.setProperty('--brand-text-on-primary', colors.textOnPrimary);
-  root.style.setProperty('--brand-border', colors.border);
+  try {
+    // --brand-* variables
+    root.style.setProperty('--brand-primary', colors.primary);
+    root.style.setProperty('--brand-secondary', colors.secondary);
+    root.style.setProperty('--brand-accent', colors.accent);
+    root.style.setProperty('--brand-background', colors.background);
+    root.style.setProperty('--brand-surface', colors.surface);
+    root.style.setProperty('--brand-text', colors.text);
+    root.style.setProperty('--brand-text-light', colors.textLight);
+    root.style.setProperty('--brand-text-on-primary', colors.textOnPrimary);
+    root.style.setProperty('--brand-border', colors.border);
 
-  // --brand-gradient-* variables
-  root.style.setProperty('--brand-gradient-primary', gradients.primary);
-  root.style.setProperty('--brand-gradient-secondary', gradients.secondary);
-  root.style.setProperty('--brand-gradient-header', gradients.header);
+    // --brand-gradient-* variables
+    root.style.setProperty('--brand-gradient-primary', gradients.primary);
+    root.style.setProperty('--brand-gradient-secondary', gradients.secondary);
+    root.style.setProperty('--brand-gradient-header', gradients.header);
 
-  // --brand-shadow-* variables
-  root.style.setProperty('--brand-shadow-sm', shadows.sm);
-  root.style.setProperty('--brand-shadow-md', shadows.md);
-  root.style.setProperty('--brand-shadow-lg', shadows.lg);
+    // --brand-shadow-* variables
+    root.style.setProperty('--brand-shadow-sm', shadows.sm);
+    root.style.setProperty('--brand-shadow-md', shadows.md);
+    root.style.setProperty('--brand-shadow-lg', shadows.lg);
 
-  // --brand-radius-* variables
-  root.style.setProperty('--brand-radius-sm', borderRadius.sm);
-  root.style.setProperty('--brand-radius-md', borderRadius.md);
-  root.style.setProperty('--brand-radius-lg', borderRadius.lg);
+    // --brand-radius-* variables
+    root.style.setProperty('--brand-radius-sm', borderRadius.sm);
+    root.style.setProperty('--brand-radius-md', borderRadius.md);
+    root.style.setProperty('--brand-radius-lg', borderRadius.lg);
 
-  // Legacy --dynamic-* variables (backward compatibility)
-  const primaryHsl = hexToHsl(colors.primary);
-  const secondaryHsl = hexToHsl(colors.secondary);
-  root.style.setProperty('--dynamic-primary-h', `${primaryHsl.h}`);
-  root.style.setProperty('--dynamic-primary-s', `${primaryHsl.s}%`);
-  root.style.setProperty('--dynamic-primary-l', `${primaryHsl.l}%`);
-  root.style.setProperty('--dynamic-primary-hsl', `${primaryHsl.h} ${primaryHsl.s}% ${primaryHsl.l}%`);
-  root.style.setProperty('--dynamic-primary', colors.primary);
-  root.style.setProperty('--dynamic-primary-hover', `hsl(${primaryHsl.h} ${primaryHsl.s}% ${Math.max(primaryHsl.l - 8, 0)}%)`);
-  root.style.setProperty('--dynamic-primary-active', `hsl(${primaryHsl.h} ${primaryHsl.s}% ${Math.max(primaryHsl.l - 16, 0)}%)`);
-  root.style.setProperty('--dynamic-primary-highlight', `hsl(${primaryHsl.h} ${Math.round(primaryHsl.s * 0.3)}% ${Math.min(primaryHsl.l + 38, 96)}%)`);
-  root.style.setProperty('--dynamic-secondary', colors.secondary);
-  root.style.setProperty('--dynamic-background', colors.background);
-  root.style.setProperty('--dynamic-font-primary', fonts.primary);
-  root.style.setProperty('--dynamic-font-secondary', fonts.secondary);
+    // Legacy --dynamic-* variables (backward compatibility)
+    const primaryHsl = hexToHsl(colors.primary);
+    if (primaryHsl) {
+      root.style.setProperty('--dynamic-primary-h', `${primaryHsl.h}`);
+      root.style.setProperty('--dynamic-primary-s', `${primaryHsl.s}%`);
+      root.style.setProperty('--dynamic-primary-l', `${primaryHsl.l}%`);
+      root.style.setProperty('--dynamic-primary-hsl', `${primaryHsl.h} ${primaryHsl.s}% ${primaryHsl.l}%`);
+      root.style.setProperty('--dynamic-primary', `hsl(${primaryHsl.h} ${primaryHsl.s}% ${primaryHsl.l}%)`);
+      root.style.setProperty('--dynamic-primary-hover', `hsl(${primaryHsl.h} ${primaryHsl.s}% ${Math.max(primaryHsl.l - 8, 0)}%)`);
+      root.style.setProperty('--dynamic-primary-active', `hsl(${primaryHsl.h} ${primaryHsl.s}% ${Math.max(primaryHsl.l - 16, 0)}%)`);
+      root.style.setProperty('--dynamic-primary-highlight', `hsl(${primaryHsl.h} ${Math.round(primaryHsl.s * 0.3)}% ${Math.min(primaryHsl.l + 38, 96)}%)`);
+    } else {
+      root.style.setProperty('--dynamic-primary', colors.primary);
+    }
+    root.style.setProperty('--dynamic-secondary', colors.secondary);
+    root.style.setProperty('--dynamic-background', colors.background);
+    root.style.setProperty('--dynamic-font-primary', fonts.primary);
+    root.style.setProperty('--dynamic-font-secondary', fonts.secondary);
 
-  // Font application on body
-  document.body.style.fontFamily = `${fonts.primaryAr}, ${fonts.primary}, sans-serif`;
+    // Font application on body — safely
+    if (document.body) {
+      document.body.style.fontFamily = `${fonts.primaryAr}, ${fonts.primary}, sans-serif`;
+    }
 
-  console.log(`✅ Full brand applied: ${brand.name}`);
+    console.log(`✅ Full brand applied: ${brand.name}`);
+  } catch (err) {
+    console.error('❌ applyFullBrandCSS failed:', err);
+  }
 }
 
 export function removeDynamicIdentity(): void {
@@ -888,9 +935,19 @@ export function removeDynamicIdentity(): void {
     '--dynamic-secondary', '--dynamic-background',
     '--dynamic-font-primary', '--dynamic-font-secondary',
   ];
-  props.forEach(p => root.style.removeProperty(p));
-  root.removeAttribute('data-entity');
-  document.body.style.fontFamily = '';
+  try {
+    props.forEach(p => root.style.removeProperty(p));
+  } catch (err) {
+    console.error('❌ removeDynamicIdentity failed:', err);
+  }
+  try {
+    root.removeAttribute('data-entity');
+  } catch { /* ignore */ }
+  try {
+    if (document.body) {
+      document.body.style.fontFamily = '';
+    }
+  } catch { /* ignore */ }
 }
 
 export { removeDynamicIdentity as resetDynamicIdentity };
