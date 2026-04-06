@@ -787,9 +787,9 @@ export function detectEntityFromURL(): string | null {
   const pathname = window.location.pathname;
   const parts = pathname.split('/').filter(Boolean);
 
-  // /p/:id/:company/...
-  if (parts[0] === 'p' && parts.length >= 2) {
-    const company = parts[1].toLowerCase();
+  // /p/:id/:company/:currency/:amount — company is at index 2
+  if (parts[0] === 'p' && parts.length >= 3) {
+    const company = parts[2].toLowerCase();
     if (entityRegistry[company]) return company;
   }
 
