@@ -31,8 +31,7 @@
         "startCommand": "npx serve -s dist -l $PORT"
       },
       "variables": {
-        "NODE_VERSION": "18",
-        "FRONTEND_URL": "https://frontend.up.railway.app"
+        "NODE_VERSION": "18"
       }
     }
   ]
