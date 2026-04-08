@@ -17,7 +17,8 @@
         "DATABASE_URL": "sqlite:///./gcx_pay.db",
         "SECRET_KEY": {
           "generator": "RANDOM"
-        }
+        },
+        "USE_MOCK": "true"
       }
     },
     {
